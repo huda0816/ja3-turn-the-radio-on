@@ -1,7 +1,4 @@
 return {
-	PlaceObj('ModItemCode', {
-		'CodeFileName', "Code/Script.lua",
-	}),
 	PlaceObj('ModItemInventoryItemCompositeDef', {
 		'Id', "HUDA_Radio",
 		'object_class', "InventoryItem",
@@ -51,6 +48,13 @@ return {
 		group = "Default",
 		id = "HUDA_Radio",
 	}),
+	PlaceObj('ModItemTextStyle', {
+		RolloverTextColor = 4289773231,
+		TextColor = 4289773231,
+		TextFont = T(367926567718, --[[ModItemTextStyle HUDA_Radio_Bright TextFont]] "Source Code Pro, 14"),
+		group = "Default",
+		id = "HUDA_Radio_Bright",
+	}),
 	PlaceObj('ModItemSoundPreset', {
 		group = "Default",
 		id = "HUDA_RadioStatic",
@@ -66,5 +70,9 @@ return {
 	PlaceObj('ModItemCode', {
 		'name', "X_Radio",
 		'CodeFileName', "Code/X_Radio.lua",
+	}),
+	PlaceObj('ModItemCode', {
+		'name', "X_Mortar",
+		'CodeFileName', "Code/X_Mortar.lua",
 	}),
 }

@@ -26,7 +26,7 @@ PlaceObj('CombatAction', {
 
 		return "enabled"
 	end,
-	Icon = "Mod/LXPER6t/Icons/use_radio.png",
+	Icon = "Mod/a7iPvXU/Images/use_radio.png",
 	IdDefault = "Useradiodefault",
 	IsAimableAttack = false,
 	MoveStep = true,
@@ -40,107 +40,11 @@ PlaceObj('CombatAction', {
 	end,
 	SortKey = 10,
 	UIBegin = function(self, units, args)
-		CombatActionUseRadioStart(self, units, args)
+		HUDA_SpawnRadioDialog()
 	end,
 	group = "Default",
 	id = "UseRadio",
 })
-
-
-function CombatActionUseRadioStart(self, units, args, mode, noChangeAction)
-	HUDA_SpawnRadioDialog()
-
-
-	-- mode = mode or "IModeCombatAttackBase"
-
-	-- local unit = units[1]
-	-- if IsValidThread(CombatActionStartThread) then
-	-- 	DeleteThread(CombatActionStartThread)
-	-- end
-	-- CombatActionStartThread = CreateRealTimeThread(function()
-	-- 	if g_Combat then
-	-- 		WaitCombatActionsEnd(unit)
-	-- 	end
-	-- 	if not IsValid(unit) or unit:IsDead() or not unit:CanBeControlled() then
-	-- 		return
-	-- 	end
-	-- 	if PlayerActionPending(unit) then
-	-- 		return
-	-- 	end
-	-- 	if not g_Combat and not unit:IsIdleCommand() then
-	-- 		NetSyncEvent("InterruptCommand", unit, "Idle")
-	-- 	end
-
-	-- 	local target = args and args.target
-	-- 	local freeAim = args and args.free_aim or not UIAnyEnemyAttackGood(self)
-	-- 	if freeAim and not g_Combat and self.basicAttack and self.ActionType == "Melee Attack" then
-	-- 		local action = GetMeleeAttackAction(self, unit)
-	-- 		freeAim = action.id ~= "CancelMark"
-	-- 	end
-	-- 	freeAim = freeAim and (self.id ~= "CancelMark")
-	-- 	if not self.IsTargetableAttack and IsValid(target) and freeAim then
-	-- 		local ap = self:GetAPCost(unit, args)
-	-- 		NetStartCombatAction(self.id, unit, ap, args)
-	-- 		return
-	-- 	end
-
-	-- 	if mode == "IModeCombatMelee" and target then
-	-- 		local weapon = self:GetAttackWeapons(unit)
-	-- 		local ok, reason = unit:CanAttack(target, weapon, self)
-	-- 		if not ok then
-	-- 			ReportAttackError(args.target, reason)
-	-- 			return
-	-- 		end
-	-- 		--if not IsMeleeRangeTarget(unit, nil, nil, target) then			
-	-- 		--ReportAttackError(args.target, AttackDisableReasons.CantReach)
-	-- 		--return
-	-- 		--end
-	-- 	end
-
-	-- 	-- Check what actually needs switching
-	-- 	local changeNeeded, dlg, targetGiven = CombatActionChangeNeededTryRetainTarget(mode, self, unit, target, freeAim)
-
-	-- 	-- Clicking a single target skill twice will cause the attack to proceed
-	-- 	if not changeNeeded then
-	-- 		if dlg.crosshair then
-	-- 			dlg.crosshair:Attack()
-	-- 		else
-	-- 			dlg:Confirm()
-	-- 		end
-	-- 		return
-	-- 	end
-
-	-- 	-- Changing actions requires notifying the dialog to exit quietly.
-	-- 	if changeNeeded == "change-action" then
-	-- 		dlg.context.changing_action = true
-	-- 	end
-
-	-- 	-- It is possible for the unit to have been deselected in all our waiting.
-	-- 	-- Of for the action to have been disabled.
-	-- 	local state = self:GetUIState(units)
-	-- 	if not SelectedObj or state ~= "enabled" then
-	-- 		return
-	-- 	end
-
-	-- 	-- Patch selection outside of combat to remove multiselection
-	-- 	-- We're not doing this through SelectObj as the selection changed msg
-	-- 	-- will cancel the action.
-	-- 	if not g_Combat then
-	-- 		Selection = { unit }
-	-- 	end
-
-	-- 	local modeDlg = GetInGameInterfaceModeDlg()
-	-- 	modeDlg.dont_return_camera_on_close = true
-	-- 	SetInGameInterfaceMode(mode, {
-	-- 		action = self,
-	-- 		attacker = unit,
-	-- 		target = target,
-	-- 		aim = args and args.aim,
-	-- 		free_aim = freeAim,
-	-- 		changing_action = changeNeeded == "change-action"
-	-- 	})
-	-- end)
-end
 
 function HUDA_SpawnRadioDialog()
 	local popupHost = GetDialog("InGameInterface")

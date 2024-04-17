@@ -61,22 +61,6 @@ PlaceObj("XTemplate", {
 			self.idContainer.idRadioHeader[1]:SetText(Untranslated(modeTitels[mode] or "AVAILABLE ACTIONS:"))
 		end,
 		}),
-		-- PlaceObj('XTemplateFunc', {
-		-- 	'name', "Open",
-		-- 	'func', function(self, ...)
-		-- 	XDialog.Open(self, ...)
-
-		-- 	self:SetMode("radioactions")
-		-- end,
-		-- }),
-		-- PlaceObj('XTemplateFunc', {
-		-- 	'name', "SetMode(self, mode,...)",
-		-- 	'func', function(self, mode, ...)
-		-- 	if mode ~= self.Mode then
-		-- 		XDialog.SetMode(self, mode, ...)
-		-- 	end
-		-- end,
-		-- }),
 		PlaceObj("XTemplateWindow", {
 			"HAlign",
 			"center",
@@ -97,7 +81,7 @@ PlaceObj("XTemplate", {
 				'comment', "background rectangle",
 				'__class', "XImage",
 				'Dock', "box",
-				'Image', "Mod/LXPER6t/Icons/radiobg.png",
+				'Image', "Mod/a7iPvXU/Images/radiobg.png",
 			}),
 			PlaceObj("XTemplateWindow", {
 				'__class', "XContentTemplate",

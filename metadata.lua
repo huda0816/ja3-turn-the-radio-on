@@ -2,11 +2,10 @@ return PlaceObj('ModDef', {
 	'title', "Reinforcementest",
 	'id', "a7iPvXU",
 	'author', "permanent666",
-	'version', 502,
+	'version', 570,
 	'lua_revision', 233360,
 	'saved_with_revision', 350233,
 	'code', {
-		"Code/Script.lua",
 		"InventoryItem/HUDA_Radio.lua",
 		"Code/Mortar.lua",
 		"Code/Reinforcements.lua",
@@ -15,11 +14,12 @@ return PlaceObj('ModDef', {
 		"Code/Radio.lua",
 		"Code/OR_Bombard.lua",
 		"Code/X_Radio.lua",
+		"Code/X_Mortar.lua",
 	},
 	'default_options', {},
 	'has_data', true,
-	'saved', 1713308905,
-	'code_hash', 6837076306364743735,
+	'saved', 1713394697,
+	'code_hash', -713801375396451297,
 	'affected_resources', {
 		PlaceObj('ModResourcePreset', {
 			'Class', "InventoryItemCompositeDef",
@@ -29,6 +29,11 @@ return PlaceObj('ModDef', {
 		PlaceObj('ModResourcePreset', {
 			'Class', "TextStyle",
 			'Id', "HUDA_Radio",
+			'ClassDisplayName', "Text style",
+		}),
+		PlaceObj('ModResourcePreset', {
+			'Class', "TextStyle",
+			'Id', "HUDA_Radio_Bright",
 			'ClassDisplayName', "Text style",
 		}),
 		PlaceObj('ModResourcePreset', {

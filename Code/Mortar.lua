@@ -28,7 +28,7 @@ function Mortar:ValidatePos(aim_pt)
 	if not attacker_pos3D:IsValidZ() then
 		attacker_pos3D = attacker_pos3D:SetTerrainZ()
 	end
-	local min_aim_range = attacker ~= self.owner and 0 or 15 * const.SlabSizeX
+	local min_aim_range = attacker.session_id ~= self.owner and 0 or 15 * const.SlabSizeX
 	if min_aim_range and IsCloser(attacker_pos3D, aim_pt, min_aim_range - 1) then
 		aim_pt = attacker_pos3D + SetLen(aim_pt - attacker_pos3D, min_aim_range)
 	end
@@ -114,3 +114,19 @@ function Mortar:GetAttackResults(action, attack_args)
 
 	return results
 end
+
+MortarInventoryItem.MagazineSize = 6
+
+MortarShell_HE.CenterUnitDamageMod = 200
+MortarShell_HE.CenterObjDamageMod = 500
+MortarShell_HE.CenterAppliedEffects = {
+	"Suppressed",
+}
+MortarShell_HE.AreaOfEffect = 4
+MortarShell_HE.CenterAreaOfEffect = 2
+MortarShell_HE.AreaAppliedEffects = {
+	"Suppressed",
+}
+MortarShell_HE.PenetrationClass = 4
+MortarShell_HE.BurnGround = false
+MortarShell_HE.BaseDamage = 30
