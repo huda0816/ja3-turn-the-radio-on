@@ -46,6 +46,7 @@ PlaceObj('CombatAction', {
 	id = "UseRadio",
 })
 
+
 function HUDA_SpawnRadioDialog()
 	local popupHost = GetDialog("InGameInterface")
 

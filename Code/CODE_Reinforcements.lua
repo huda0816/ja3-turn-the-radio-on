@@ -1,3 +1,27 @@
+GameVar("gv_HUDA_Reinforcements", {})
+
+function OnMsg.TurnStart()
+
+	local reinforcementList = gv_HUDA_Reinforcements and table.copy(gv_HUDA_Reinforcements) or empty_table
+
+	for i, reinforcements in ipairs(reinforcementList) do
+		if g_Combat.current_turn >= reinforcements.arrival then
+			HUDA_ReinforcementArrival(reinforcements.squad, reinforcements.sector_id, reinforcements.direction)
+			table.remove(gv_HUDA_Reinforcements, i)
+		end
+	end
+end
+
+function OnMsg.CombatEnd()
+
+	local reinforcementList = gv_HUDA_Reinforcements and table.copy(gv_HUDA_Reinforcements) or empty_table
+
+	for i, reinforcements in ipairs(gv_HUDA_Reinforcements or empty_table) do
+		HUDA_ReinforcementArrival(reinforcements.squad, reinforcements.sector_id, reinforcements.direction)
+		table.remove(gv_HUDA_Reinforcements, i)
+	end
+end
+
 function HUDA_ReinforceEnemy()
 	local cardinalSectors = HUDA_GetCardinalSectors(gv_CurrentSectorId)
 
@@ -12,13 +36,30 @@ function HUDA_ReinforceEnemy()
 	end
 end
 
-function HUDA_SendReinforcements(squad, sector_id, direction)
-	CreateRealTimeThread(function()
-		Sleep(10000)
-		HUDA_SetSatelliteSquadCurrentSector(squad, gv_CurrentSectorId, sector_id)
-		HUDA_SpawnReinforcements(squad, direction)
-		CombatLog("important", Untranslated("Reinforcements have arrived"))
-	end)
+function HUDA_ReinforcementArrival(squad, sector_id, direction)
+	HUDA_SetSatelliteSquadCurrentSector(squad, gv_CurrentSectorId, sector_id)
+	HUDA_SpawnReinforcements(squad, direction)
+	-- ShowTacticalNotification('HUDA_AlliedReinforcementArrival', nil, nil, {})
+end
+
+function HUDA_SendReinforcements(squad, sector_id, direction, turns)
+	if g_Combat then
+		gv_HUDA_Reinforcements = gv_HUDA_Reinforcements or {}
+
+		local reinforcements = {
+			squad = squad,
+			sector_id = sector_id,
+			direction = direction,
+			arrival = g_Combat.current_turn + (turns or 2)
+		}
+
+		table.insert(gv_HUDA_Reinforcements, reinforcements)
+	else
+		CreateGameTimeThread(function()
+			Sleep(100000)
+			HUDA_ReinforcementArrival(squad, sector_id, direction)
+		end)
+	end
 end
 
 function HUDA_SetSatelliteSquadCurrentSector(squad, sector_id, prev_sector_id)
@@ -76,35 +117,22 @@ function HUDA_SpawnReinforcements(squad, direction)
 	end
 end
 
-function HUDA_GetBestExitZoneInteractable(direction)
-	local bestExitZone = false
-	MapForEach("map", "ExitZoneInteractable", function(o)
-		if not bestExitZone then
-			bestExitZone = o
-			return
-		end
-		local ox, oy = o:GetPosXYZ()
+PlaceObj('TacticalNotification', {
+	SortKey = -9000,
+	combatLog = true,
+	combatLogType = "important",
+	id = "HUDA_AlliedReinforcementArrival",
+	style = "green",
+	text = T(30425811312000000816, 'Your reinforcements have arrived!'),
+	duration = 3000,
+})
 
-		local bx, by = bestExitZone:GetPosXYZ()
-
-		if direction == "down" then
-			if oy < by then
-				bestExitZone = o
-			end
-		elseif direction == "up" then
-			if oy > by then
-				bestExitZone = o
-			end
-		elseif direction == "left" then
-			if ox < bx then
-				bestExitZone = o
-			end
-		elseif direction == "right" then
-			if ox > bx then
-				bestExitZone = o
-			end
-		end
-	end)
-
-	return bestExitZone
-end
+PlaceObj('TacticalNotification', {
+	SortKey = -9000,
+	combatLog = true,
+	combatLogType = "important",
+	id = "HUDA_EnemyReinforcementArrival",
+	style = "red",
+	text = T(30425811312000010817, 'Enemy reinforcements have arrived!'),
+	duration = 3000,
+})

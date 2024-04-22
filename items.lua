@@ -18,28 +18,33 @@ return {
 		'PocketML_amount', 1,
 		'Carabiner_amount', 1,
 	}),
-	PlaceObj('ModItemFolder', {
-		'name', "New folder",
+	PlaceObj('ModItemCode', {
+		'name', "CA_UseRadio",
+		'CodeFileName', "Code/CA_UseRadio.lua",
 	}),
 	PlaceObj('ModItemCode', {
-		'name', "Mortar",
-		'CodeFileName', "Code/Mortar.lua",
+		'name', "CA_BombardRemote",
+		'CodeFileName', "Code/CA_BombardRemote.lua",
 	}),
 	PlaceObj('ModItemCode', {
-		'name', "Reinforcements",
-		'CodeFileName', "Code/Reinforcements.lua",
+		'name', "CODE_Reinforcements",
+		'CodeFileName', "Code/CODE_Reinforcements.lua",
 	}),
 	PlaceObj('ModItemCode', {
-		'name', "RemoteMortarstrike",
-		'CodeFileName', "Code/RemoteMortarstrike.lua",
+		'name', "CODE_MortarStrike",
+		'CodeFileName', "Code/CODE_MortarStrike.lua",
 	}),
 	PlaceObj('ModItemCode', {
-		'name', "MortarStrike",
-		'CodeFileName', "Code/MortarStrike.lua",
+		'name', "CA_Bombard",
+		'CodeFileName', "Code/CA_Bombard.lua",
 	}),
 	PlaceObj('ModItemCode', {
-		'name', "Radio",
-		'CodeFileName', "Code/Radio.lua",
+		'name', "CODE_Mortar",
+		'CodeFileName', "Code/CODE_Mortar.lua",
+	}),
+	PlaceObj('ModItemCode', {
+		'name', "CODE_Utils",
+		'CodeFileName', "Code/CODE_Utils.lua",
 	}),
 	PlaceObj('ModItemTextStyle', {
 		RolloverTextColor = 4281612093,
@@ -54,14 +59,6 @@ return {
 		TextFont = T(367926567718, --[[ModItemTextStyle HUDA_Radio_Bright TextFont]] "Source Code Pro, 14"),
 		group = "Default",
 		id = "HUDA_Radio_Bright",
-	}),
-	PlaceObj('ModItemSoundPreset', {
-		group = "Default",
-		id = "HUDA_RadioStatic",
-		type = "IngameUI",
-		PlaceObj('Sample', {
-			'file', "Mod/a7iPvXU/Sounds/police-radio-bleep-edit.wav",
-		}),
 	}),
 	PlaceObj('ModItemCode', {
 		'name', "OR_Bombard",

@@ -50,7 +50,7 @@ PlaceObj('CombatAction', {
 		return 100000000000
 	end,
 	GetUIState = function(self, units, args)
-		return CombatActionGenericAttackGetUIState(self, units, args)
+		return "enabled"
 	end,
 	Icon = "UI/Icons/Hud/heavy_weapon_attack",
 	IdDefault = "Bombardremotedefault",
@@ -148,69 +148,19 @@ function Unit:PrepareRemoteBombard(action_id, cost_ap, args)
 	end
 end
 
-function HUDA_RemoveFiredAmmo(weapon, ordnance, amount)
-	local ownerId = weapon.owner
-	local ammo_type = ordnance.class
-	local weapon_ammo = weapon.ammo
+function HUDA_SpawnMortarStrikeDialog()
+	local popupHost = GetDialog("InGameInterface")
 
-	-- first check if the weapon has the ammo and remove as much as possible
+	local maxAttacks = HUDA_GetMaxAttacks(SelectedObj)
 
-	if weapon_ammo and weapon_ammo.class == ammo_type then
-		if weapon.ammo.Amount <= amount then
-			amount = amount - weapon_ammo.Amount
-			weapon_ammo.Amount = 0
-			weapon.ammo = nil
-		else
-			weapon_ammo.Amount = weapon_ammo.Amount - amount
-			amount = 0
-		end
+	local mortarRounds = {}
+
+	for i = 1, maxAttacks do
+		table.insert(mortarRounds, { value = i, name = tostring(i) })
 	end
 
-	if amount <= 0 then
-		return
-	end
-
-	-- then check the weapon.owner items
-
-	local owner = gv_UnitData[ownerId]
-
-	local items = owner:GetItems()
-
-	for i, item in ipairs(items) do
-		if item.class == ammo_type then
-			if item.Amount <= amount then
-				amount = amount - item.Amount
-				item.Amount = 0
-				table.remove(items, i)
-			else
-				item.Amount = item.Amount - amount
-				amount = 0
-			end
-		end
-
-		if amount <= 0 then
-			return
-		end
-	end
-
-	-- then check the squad bag
-
-	local bag = GetSquadBag(owner.Squad)
-
-	for i, item in ipairs(bag) do
-		if item.class == ammo_type then
-			if item.Amount <= amount then
-				amount = amount - item.Amount
-				item.Amount = 0
-				table.remove(bag, i)
-			else
-				item.Amount = item.Amount - amount
-				amount = 0
-			end
-		end
-
-		if amount <= 0 then
-			return
-		end
-	end
+	OpenDialog("HUDAMortarDialog", popupHost, {
+		mortarRounds = mortarRounds,
+		mortarSpacing = { { value = 2, name = "NARROW" }, { value = 4, name = "NORMAL" }, { value = 6, name = "WIDE" } }
+	})
 end
