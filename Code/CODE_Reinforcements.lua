@@ -36,26 +36,45 @@ function HUDA_ReinforceEnemy()
 	end
 end
 
+function HUDA_GetReinforcementAp(unit)
+
+	-- higher leadership will reduce the AP costs
+
+	local baseCosts = 5000
+
+	local leadership = unit.Leadership
+
+	local adjustedCosts = baseCosts + (100 - leadership) * 10
+
+	return adjustedCosts
+
+end
+
 function HUDA_ReinforcementArrival(squad, sector_id, direction)
 	HUDA_SetSatelliteSquadCurrentSector(squad, gv_CurrentSectorId, sector_id)
 	HUDA_SpawnReinforcements(squad, direction)
 	-- ShowTacticalNotification('HUDA_AlliedReinforcementArrival', nil, nil, {})
 end
 
-function HUDA_SendReinforcements(squad, sector_id, direction, turns)
+function HUDA_SendReinforcements(squad, sector_id, direction, turns, caller)
 	if g_Combat then
 		gv_HUDA_Reinforcements = gv_HUDA_Reinforcements or {}
+
+		if caller then
+			local reinforcementAP = HUDA_GetReinforcementAp(caller)
+			caller:ConsumeAP(reinforcementAP)
+		end
 
 		local reinforcements = {
 			squad = squad,
 			sector_id = sector_id,
 			direction = direction,
-			arrival = g_Combat.current_turn + (turns or 2)
+			arrival = (g_Combat.current_turn or 0) + (turns or 2)
 		}
 
 		table.insert(gv_HUDA_Reinforcements, reinforcements)
 	else
-		CreateGameTimeThread(function()
+		CreateRealTimeThread(function()
 			Sleep(100000)
 			HUDA_ReinforcementArrival(squad, sector_id, direction)
 		end)

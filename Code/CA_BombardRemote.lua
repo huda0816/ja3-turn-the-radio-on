@@ -8,7 +8,7 @@ PlaceObj('CombatAction', {
 		"Setup a zone bombarded at the start of your next turn."),
 	DisplayName = T(293721021077, --[[CombatAction Bombard DisplayName]] "Bombard Remote"),
 	GetAPCost = function(self, unit, args)
-		return 8 * const.Scale.AP
+		return HUDA_GetRemoteMortarAp(unit)
 	end,
 	GetActionDamage = function(self, unit, target, args)
 		local weapon = self:GetAttackWeapons(unit, args)
@@ -107,8 +107,12 @@ function Unit:PrepareRemoteBombard(action_id, cost_ap, args)
 	local ordnance = results.ordnance
 	local bombard_radius = weapon.BombardRadius
 	local bombard_shots = results.fired
-	
+
 	HUDA_RemoveFiredAmmo(weapon, ordnance, bombard_shots)
+
+	if g_Combat then
+		HUDA_AddToStrikers(weapon)
+	end
 
 	self.attackOptions = nil
 

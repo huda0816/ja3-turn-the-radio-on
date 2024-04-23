@@ -8,7 +8,7 @@ function HUDA_SquadHasRadio(squad)
 		local items = unit:GetItems()
 
 		for i, item in ipairs(items) do
-			if IsKindOf(item, "HUDA_Radio") then
+			if IsKindOf(item, "HUDA_Radio") or IsKindOf(item, "CustomPDA") then
 				return true
 			end
 		end
@@ -28,7 +28,21 @@ function HUDA_GetCardinalSectors(sector_id)
 	return sectors
 end
 
+function HUDA_IsSquadTravelling(squad)
+
+	gv_HUDA_Reinforcements = gv_HUDA_Reinforcements or {}
+
+	for i, reinforcements in ipairs(gv_HUDA_Reinforcements) do
+		if reinforcements.squad.UniqueId == squad.UniqueId then
+			return true
+		end
+	end
+
+	return IsSquadTravelling(squad)
+end
+
 function HUDA_GetAdjacentAlliedSquads(sector_id, needRadio)
+
 	local cardinalSectors = HUDA_GetCardinalSectors(sector_id)
 
 	local adjacentSquads = {}
@@ -39,6 +53,11 @@ function HUDA_GetAdjacentAlliedSquads(sector_id, needRadio)
 		local squads = sector.ally_and_militia_squads
 
 		for i, squad in ipairs(squads) do
+
+			if HUDA_IsSquadTravelling(squad) then
+				goto continue
+			end
+
 			if needRadio and not HUDA_SquadHasRadio(squad) then
 				goto continue
 			end

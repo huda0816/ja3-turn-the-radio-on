@@ -2,19 +2,31 @@ PlaceObj('CombatAction', {
 	ActionPoints = 2000,
 	ActivePauseBehavior = "queue",
 	ConfigurableKeybind = false,
-	Description = T(10576542073808170816, --[[CombatAction UseRadio Description]] "Use Radio"),
-	DisplayName = T(0816615556944457, --[[CombatAction CapturePOW DisplayName]] "UseRadio"),
+	Description = T(10576542073808170816, --[[CombatAction UseRadio Description]] "Use the radio to call for reinforcements or mortar strikes."),
+	DisplayName = T(08166155569444570817, --[[CombatAction CapturePOW DisplayName]] "Use Radio"),
 	GetAPCost = function(self, unit, args)
 		return 0
 	end,
 	GetAttackWeapons = function(self, unit, args)
 		local item
-		local res = unit:ForEachItem("HUDA_Radio", function(itm, slot)
+		unit:ForEachItem("HUDA_Radio", function(itm, slot)
 			-- if itm.Condition > 0 then
 			item = itm
 			return "break"
 			-- end
 		end, item)
+
+		if item then
+			return item
+		end
+
+		unit:ForEachItem("CustomPDA", function(itm, slot)
+			-- if itm.Condition > 0 then
+			item = itm
+			return "break"
+			-- end
+		end, item)
+
 		return item
 	end,
 	GetUIState = function(self, units, args)
@@ -40,21 +52,30 @@ PlaceObj('CombatAction', {
 	end,
 	SortKey = 10,
 	UIBegin = function(self, units, args)
-		HUDA_SpawnRadioDialog()
+		HUDA_SpawnRadioDialog(units[1])
 	end,
 	group = "Default",
 	id = "UseRadio",
 })
 
 
-function HUDA_SpawnRadioDialog()
+function HUDA_SpawnRadioDialog(unit)
 	local popupHost = GetDialog("InGameInterface")
 
 	local reinforcementSquads = HUDA_GetAdjacentAlliedSquads(gv_CurrentSectorId, "needRadio")
 
 	local mortarSquads = HUDA_GetAdjacentMortarSquads(gv_CurrentSectorId)
 
+	local mortarAp = g_Combat and HUDA_GetRemoteMortarAp(unit)
+
+	local reinforcementAp = g_Combat and HUDA_GetReinforcementAp(unit)
+
 	OpenDialog("HUDAReinforcmentsDialog", popupHost, {
+		unit = unit,
+		mortarActive = #mortarSquads > 0 and (g_Combat and unit:UIHasAP(mortarAp) or true),
+		mortarAp = mortarAp,
+		reinforcementActive = #reinforcementSquads > 0 and (g_Combat and unit:UIHasAP(reinforcementAp) or true),
+		reinforcementAp = reinforcementAp,
 		reinforcementSquads = reinforcementSquads,
 		mortarSquads = mortarSquads,
 		mortarAmmo = { { value = "MortarShell_HE", name = "HE" }, { value = "MortarShell_Gas", name = "GAS" }, { value = "MortarShell_Smoke", name = "SMOKE" } },

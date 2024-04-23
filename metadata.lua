@@ -2,7 +2,7 @@ return PlaceObj('ModDef', {
 	'title', "Reinforcementest",
 	'id', "a7iPvXU",
 	'author', "permanent666",
-	'version', 634,
+	'version', 674,
 	'lua_revision', 233360,
 	'saved_with_revision', 350233,
 	'code', {
@@ -20,8 +20,8 @@ return PlaceObj('ModDef', {
 	},
 	'default_options', {},
 	'has_data', true,
-	'saved', 1713825552,
-	'code_hash', 1688401523988305911,
+	'saved', 1713912531,
+	'code_hash', 4261519837115658121,
 	'affected_resources', {
 		PlaceObj('ModResourcePreset', {
 			'Class', "InventoryItemCompositeDef",

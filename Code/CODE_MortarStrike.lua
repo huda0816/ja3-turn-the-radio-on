@@ -1,3 +1,13 @@
+GameVar("gv_HUDA_Remotestrikers", {})
+
+function OnMsg.TurnStart()
+	gv_HUDA_Remotestrikers = {}
+end
+
+function OnMsg.CombatEnd()
+	gv_HUDA_Remotestrikers = {}
+end
+
 function HUDA_GetAvailableMortarAmmo(squad, mortar)
 	local ammo_class = "Ordnance"
 	local types = mortar and mortar.ammo and { mortar.ammo } or {}
@@ -37,6 +47,38 @@ function HUDA_GetAvailableMortarAmmo(squad, mortar)
 	return summarizedAmmo
 end
 
+function HUDA_DidSquadStrikeThisTurn(squad)
+	gv_HUDA_Remotestrikers = gv_HUDA_Remotestrikers or {}
+
+	for i, striker in ipairs(gv_HUDA_Remotestrikers) do
+		if striker == squad.UniqueId then
+			return true
+		end
+	end
+
+	return false
+end
+
+function HUDA_GetStrikerSquadByWeapon(weapon)
+	local ownerId = weapon.owner
+
+	local owner = gv_UnitData[ownerId]
+
+	if not owner then
+		return
+	end
+
+	return owner.Squad
+end
+
+function HUDA_AddToStrikers(weapon)
+	local squadId = HUDA_GetStrikerSquadByWeapon(weapon)
+
+	gv_HUDA_Remotestrikers = gv_HUDA_Remotestrikers or {}
+
+	table.insert(gv_HUDA_Remotestrikers, squadId)
+end
+
 function HUDA_GetAdjacentMortarSquads(sector_id)
 	local adjacentSquads = HUDA_GetAdjacentAlliedSquads(sector_id, "needRadio")
 
@@ -44,6 +86,10 @@ function HUDA_GetAdjacentMortarSquads(sector_id)
 
 	for i, prepSquad in ipairs(adjacentSquads) do
 		local squad = gv_Squads[prepSquad.squadId]
+
+		if g_Combat and HUDA_DidSquadStrikeThisTurn(squad) then
+			goto continue
+		end
 
 		local mortarData = {}
 
@@ -67,6 +113,8 @@ function HUDA_GetAdjacentMortarSquads(sector_id)
 				table.insert(mortarSquads, prepSquad)
 			end
 		end
+
+		::continue::
 	end
 
 	return mortarSquads
@@ -233,6 +281,18 @@ function HUDA_GetMaxAttacks(unit)
 	return shots
 end
 
+function HUDA_GetRemoteMortarAp(unit)
+	-- higher leadership will reduce the AP costs
+
+	local baseCosts = 7000
+
+	local leadership = unit.Leadership
+
+	local adjustedCosts = baseCosts + (100 - leadership) * 10
+
+	return adjustedCosts
+end
+
 function HUDA_AccuracyCheck(attacker, rand)
 	local weapon = attacker:GetActiveWeapons()
 
@@ -352,5 +412,3 @@ function HUDA_BombardAccuracyCheck(attacker, radius, i, num_shots, pos)
 
 	return dist, angle
 end
-
-
