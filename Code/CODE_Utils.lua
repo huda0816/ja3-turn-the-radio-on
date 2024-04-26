@@ -1,6 +1,3 @@
-
-
-
 function HUDA_SquadHasRadio(squad)
 	for i, unitId in ipairs(squad.units) do
 		local unit = gv_UnitData[unitId]
@@ -29,7 +26,6 @@ function HUDA_GetCardinalSectors(sector_id)
 end
 
 function HUDA_IsSquadTravelling(squad)
-
 	gv_HUDA_Reinforcements = gv_HUDA_Reinforcements or {}
 
 	for i, reinforcements in ipairs(gv_HUDA_Reinforcements) do
@@ -41,32 +37,37 @@ function HUDA_IsSquadTravelling(squad)
 	return IsSquadTravelling(squad)
 end
 
-function HUDA_GetAdjacentAlliedSquads(sector_id, needRadio)
-
+function HUDA_GetAdjacentSquads(sector_id, needRadio, side)
 	local cardinalSectors = HUDA_GetCardinalSectors(sector_id)
 
 	local adjacentSquads = {}
 
-	for direction, sector_id in pairs(cardinalSectors) do
-		local sector = gv_Sectors[sector_id]
+	for direction, cardinal_sector_id in pairs(cardinalSectors) do
+		local sector = gv_Sectors[cardinal_sector_id]
 
-		local squads = sector.ally_and_militia_squads
+		local squads
+
+		if side then
+			squads = side == "enemy1" and sector.enemy_squads or sector.ally_and_militia_squads
+		else
+			squads = sector.all_squads
+		end
 
 		for i, squad in ipairs(squads) do
-
 			if HUDA_IsSquadTravelling(squad) then
 				goto continue
 			end
 
 			if needRadio and not HUDA_SquadHasRadio(squad) then
 				goto continue
-			end
+			end			
 
 			table.insert(adjacentSquads, {
 				squadId = squad.UniqueId,
 				direction = direction,
-				sectorId = sector_id,
-				name = squad.Name
+				sectorId = cardinal_sector_id,
+				name = squad.Name,
+				minDelay = HUDA_GetMinimumReinforcmentDelay(squad, sector_id)
 			})
 
 			::continue::
@@ -74,6 +75,24 @@ function HUDA_GetAdjacentAlliedSquads(sector_id, needRadio)
 	end
 
 	return adjacentSquads
+end
+
+function HUDA_GetMinimumReinforcmentDelay(squad, destination)
+
+    local travelTime = GetSectorTravelTime(squad.CurrentSector, destination)
+
+	if travelTime < 20000 then
+		return 3
+	elseif travelTime < 40000 then
+		return 7
+	elseif travelTime < 60000 then
+		return 12
+	end
+
+end
+
+function HUDA_GetAdjacentAlliedSquads(sector_id, needRadio)
+	return HUDA_GetAdjacentSquads(sector_id, needRadio, "player1")
 end
 
 function HUDA_GetBestExitZoneInteractable(direction)

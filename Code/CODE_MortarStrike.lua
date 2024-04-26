@@ -288,7 +288,7 @@ function HUDA_GetRemoteMortarAp(unit)
 
 	local leadership = unit.Leadership
 
-	local adjustedCosts = baseCosts + (100 - leadership) * 10
+	local adjustedCosts = baseCosts + (100 - leadership) * 100
 
 	return adjustedCosts
 end

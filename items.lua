@@ -19,6 +19,16 @@ return {
 		'Carabiner_amount', 1,
 	}),
 	PlaceObj('ModItemCode', {
+		'name', "SETUP_Options",
+		'CodeFileName', "Code/SETUP_Options.lua",
+	}),
+	PlaceObj('ModItemOptionToggle', {
+		'name', "HUDA_MortarAdjustments",
+		'DisplayName', "Adjustments of the mortar and it's HE shell",
+		'Help', "Deactivate if you want vanilla behaviour or handle mortar changes with a different mod (restart necessary)",
+		'DefaultValue', true,
+	}),
+	PlaceObj('ModItemCode', {
 		'name', "CA_UseRadio",
 		'CodeFileName', "Code/CA_UseRadio.lua",
 	}),

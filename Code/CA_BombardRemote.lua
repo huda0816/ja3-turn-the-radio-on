@@ -146,10 +146,10 @@ function Unit:PrepareRemoteBombard(action_id, cost_ap, args)
 	self:ProvokeOpportunityAttacks(action, "attack reaction")
 
 	self:PopDestructor()
-	if g_Combat then
-		self.ActionPoints = 0
-		Msg("UnitAPChanged", self, action_id)
-	end
+	-- if g_Combat then
+	-- 	self.ActionPoints = 0
+	-- 	Msg("UnitAPChanged", self, action_id)
+	-- end
 end
 
 function HUDA_SpawnMortarStrikeDialog()

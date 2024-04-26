@@ -32,6 +32,10 @@ PlaceObj('CombatAction', {
 	GetUIState = function(self, units, args)
 		local unit = units[1]
 
+		if unit.Leadership < 50 then
+			return "disabled", T(10576542073808170816, --[[CombatAction UseRadio Description]] "Only units with a leadership rating of more than 50 can use the radio.")
+		end
+
 		if g_Combat and not unit:HasAP(self.ActionPoints) then
 			return "disabled", GetUnitNoApReason(unit)
 		end
@@ -72,9 +76,9 @@ function HUDA_SpawnRadioDialog(unit)
 
 	OpenDialog("HUDAReinforcmentsDialog", popupHost, {
 		unit = unit,
-		mortarActive = #mortarSquads > 0 and (g_Combat and unit:UIHasAP(mortarAp) or true),
+		mortarActive = #mortarSquads > 0 and not g_Combat or unit:UIHasAP(mortarAp),
 		mortarAp = mortarAp,
-		reinforcementActive = #reinforcementSquads > 0 and (g_Combat and unit:UIHasAP(reinforcementAp) or true),
+		reinforcementActive = #reinforcementSquads > 0 and not g_Combat or unit:UIHasAP(reinforcementAp),
 		reinforcementAp = reinforcementAp,
 		reinforcementSquads = reinforcementSquads,
 		mortarSquads = mortarSquads,
