@@ -1,12 +1,12 @@
 return PlaceObj('ModDef', {
 	'title', "Turn the radio on",
-	'description', "Important: Do not call militia reinforcements if you use GC-Militia mod as there is a bug at the moment.\n\nThis mod adds a radio item to the game which enables two actions:\n\n[list]\n[*]Call reinforcemnets\n[*]Call mortar strike\n[/list]\n\nTo be able to perform this actions there has to be an allied squad in an adjacent sector equipped with a radio. To call in a mortar strike this squad needs a mortar and shells.\n\nThe merc who is using the radio needs at least 50 leadership. Higher leadership will reduce the action cost.\n\nThe mishap chance of the mortar strike is depending on the stats of the merc who is equipped with the mortar.\n\n[b]Additionally this mod implements changes from my mortar rework mod:[/b]\n\nWhenever you use a mortar you can choose the number of rounds and the spread of the attack.\n\nThere is an option which is turned on by default which changes some of the props of the mortar and the HE shell. Deactivate it, if you do not want this changes.",
+	'description', "This mod adds a radio item to the game which enables two actions:\n\n[list]\n[*]Call reinforcemnets\n[*]Call mortar strike\n[/list]\n\nTo be able to perform this actions there has to be an allied squad in an adjacent sector equipped with a radio. To call in a mortar strike this squad needs a mortar and shells.\n\nThe merc who is using the radio needs at least 50 leadership. Higher leadership will reduce the action cost.\n\nThe mishap chance of the mortar strike is depending on the stats of the merc who is equipped with the mortar.\n\n[b]Additionally this mod implements changes from my mortar rework mod:[/b]\n\nWhenever you use a mortar you can choose the number of rounds and the spread of the attack.\n\nThere is an option which is turned on by default which changes some of the props of the mortar and the HE shell. Deactivate it, if you do not want this changes.",
 	'image', "Mod/a7iPvXU/Images/turntheradioontitle.png",
-	'last_changes', "Initial upload",
+	'last_changes', "Fixed militia problem",
 	'id', "a7iPvXU",
 	'author', "permanent666",
-	'version_minor', 1,
-	'version', 733,
+	'version_minor', 2,
+	'version', 760,
 	'lua_revision', 233360,
 	'saved_with_revision', 350233,
 	'code', {
@@ -27,8 +27,8 @@ return PlaceObj('ModDef', {
 		HUDA_MortarAdjustments = true,
 	},
 	'has_data', true,
-	'saved', 1714174867,
-	'code_hash', -6845555349476675363,
+	'saved', 1714432193,
+	'code_hash', 2144192179524924398,
 	'affected_resources', {
 		PlaceObj('ModResourcePreset', {
 			'Class', "InventoryItemCompositeDef",

@@ -29,7 +29,10 @@ function HUDA_IsSquadTravelling(squad)
 	gv_HUDA_Reinforcements = gv_HUDA_Reinforcements or {}
 
 	for i, reinforcements in ipairs(gv_HUDA_Reinforcements) do
-		if reinforcements.squad.UniqueId == squad.UniqueId then
+
+		local squadId = reinforcements.squadId or reinforcements.squad.UniqueId -- backwards compatibility
+
+		if squadId == squad.UniqueId then
 			return true
 		end
 	end

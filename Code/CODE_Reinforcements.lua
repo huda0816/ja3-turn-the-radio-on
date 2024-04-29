@@ -19,7 +19,9 @@ function OnMsg.CombatEnd()
 	local reinforcementList = gv_HUDA_Reinforcements and table.copy(gv_HUDA_Reinforcements) or empty_table
 
 	for i, reinforcements in ipairs(gv_HUDA_Reinforcements or empty_table) do
-		HUDA_ReinforcementArrival(reinforcements.squad, reinforcements.sector_id, reinforcements.direction)
+		local squadId = reinforcements.squadId or reinforcements.squad.UniqueId -- backwards compatibility
+
+		HUDA_ReinforcementArrival(squadId, reinforcements.sector_id, reinforcements.direction)
 		table.remove(gv_HUDA_Reinforcements, i)
 	end
 end
@@ -88,10 +90,26 @@ function HUDA_GetReinforcementAp(unit)
 	return adjustedCosts
 end
 
-function HUDA_ReinforcementArrival(squad, sector_id, direction)
+function HUDA_ReinforcementArrival(storedSquadId, sector_id, direction)
+	local squad = gv_Squads[storedSquadId]
+
+	if not squad then
+		return
+	end
+
 	HUDA_SetSatelliteSquadCurrentSector(squad, gv_CurrentSectorId, sector_id)
 	HUDA_SpawnReinforcements(squad, direction) -- ShowTacticalNot
 	CombatLog("important", T(30425811312000000816, 'Your reinforcements have arrived!'))
+
+	local units = squad.units
+
+	local unit = g_Units[units[1]]
+
+	SnapCameraToObj(unit, nil, nil, 3000)
+	-- ShowTacticalNotification("HUDA_AlliedReinforcementArrival")
+	-- CreateRealTimeThread(function()
+	-- Sleep(2000)
+	-- end)
 end
 
 function HUDA_SendReinforcements(squad, sector_id, direction, turns, caller)
@@ -102,7 +120,7 @@ function HUDA_SendReinforcements(squad, sector_id, direction, turns, caller)
 	gv_HUDA_Reinforcements = gv_HUDA_Reinforcements or {}
 
 	local reinforcements = {
-		squad = squad,
+		squadId = squad.UniqueId,
 		sector_id = sector_id,
 		direction = direction,
 		arrival = g_Combat and ((g_Combat.current_turn or 0) + (turns or 2))
@@ -120,7 +138,6 @@ end
 
 function OnMsg.TimerFinished(timerId)
 	if string.starts_with(timerId, "HUDA_Reinforcements_") then
-		
 		local squadId = tonumber(string.sub(timerId, 21))
 
 		TimerDelete(timerId)
@@ -130,7 +147,9 @@ function OnMsg.TimerFinished(timerId)
 		gv_HUDA_Reinforcements = gv_HUDA_Reinforcements or {}
 
 		for k, v in pairs(gv_HUDA_Reinforcements) do
-			if v.squad.UniqueId == squadId then
+			local reinforceSquadId = v.squadId or v.squad.UniqueId -- backwards compatibility
+
+			if reinforceSquadId == squadId then
 				reinforcments = v
 				table.remove(gv_HUDA_Reinforcements, k)
 				break
@@ -141,7 +160,9 @@ function OnMsg.TimerFinished(timerId)
 			return
 		end
 
-		HUDA_ReinforcementArrival(reinforcments.squad, reinforcments.squad.CurrentSector, reinforcments.direction)
+		local finalSquadId = reinforcments.squadId or reinforcments.squad.UniqueId -- backwards compatibility
+
+		HUDA_ReinforcementArrival(finalSquadId, reinforcments.squad.CurrentSector, reinforcments.direction)
 	end
 end
 
@@ -166,10 +187,11 @@ function HUDA_SetSatelliteSquadCurrentSector(squad, sector_id, prev_sector_id)
 	squad.traversing_shortcut_start = false
 	Msg("SquadTeleported", squad)
 
-	-- if not g_SatelliteUI then return end
-	if squad.Side ~= "player1" or gv_Sectors[sector_id .. "_Underground"] or gv_Sectors[prev_sector_id .. "_Underground"] then
-		g_SatelliteUI:UpdateSectorVisuals(prev_sector_id)
-		g_SatelliteUI:UpdateSectorVisuals(sector_id)
+	if g_SatelliteUI then
+		if squad.Side ~= "player1" or gv_Sectors[sector_id .. "_Underground"] or gv_Sectors[prev_sector_id .. "_Underground"] then
+			g_SatelliteUI:UpdateSectorVisuals(prev_sector_id)
+			g_SatelliteUI:UpdateSectorVisuals(sector_id)
+		end
 	end
 
 	ObjModified(gv_Squads)
@@ -193,6 +215,8 @@ function HUDA_SpawnReinforcements(squad, direction)
 			TriggerUnitAlert("surprise", unit, "suspicious")
 		elseif squad.Side == "player1" then
 			unit:SetSide('player1')
+		elseif squad.militia then
+			unit:SetSide('ally')
 		end
 	end
 end
