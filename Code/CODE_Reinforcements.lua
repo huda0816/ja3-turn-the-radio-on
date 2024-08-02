@@ -162,7 +162,7 @@ function OnMsg.TimerFinished(timerId)
 
 		local finalSquadId = reinforcments.squadId or reinforcments.squad.UniqueId -- backwards compatibility
 
-		HUDA_ReinforcementArrival(finalSquadId, reinforcments.squad.CurrentSector, reinforcments.direction)
+		HUDA_ReinforcementArrival(finalSquadId, reinforcments.squad and reinforcments.squad.CurrentSector or reinforcments.sector_id , reinforcments.direction)
 	end
 end
 
